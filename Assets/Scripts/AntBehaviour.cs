@@ -60,7 +60,7 @@ public class AntBehaviour : MonoBehaviour
     {
         speed = RETURN_SPEED;
         MoveTowardNest();
-        scentMap.AddScent(transform.position);
+        scentMap.AddScentArea(transform.position);
     }
 
     void MoveTowardNest()

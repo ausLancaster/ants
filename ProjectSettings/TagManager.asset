@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Food
+  - Nest
   layers:
   - Default
   - TransparentFX
@@ -41,4 +42,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Environment
+    uniqueID: 3972629833
+    locked: 0
+  - name: Objects
+    uniqueID: 4035245357
+    locked: 0
+  - name: 
+    uniqueID: 526849785
     locked: 0

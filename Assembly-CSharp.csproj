@@ -60,10 +60,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\AntBehaviour.cs" />
-    <Compile Include="Assets\AntFactory.cs" />
-    <Compile Include="Assets\Map.cs" />
-    <Compile Include="Assets\Shuffle.cs" />
+    <Compile Include="Assets\Scripts\AntBehaviour.cs" />
+    <Compile Include="Assets\Scripts\AntFactory.cs" />
+    <Compile Include="Assets\Scripts\Carriable.cs" />
+    <Compile Include="Assets\Scripts\Level.cs" />
+    <Compile Include="Assets\Scripts\Scent.cs" />
+    <Compile Include="Assets\Scripts\ScentMap.cs" />
+    <Compile Include="Assets\Scripts\Scripts.cs" />
+    <Compile Include="Assets\Scripts\Shuffle.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/work/Unity Projects/Life Sim/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

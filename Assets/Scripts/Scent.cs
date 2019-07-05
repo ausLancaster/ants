@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Scent : MonoBehaviour
 {
-    private const int MAX_SCENT = 300;
+    private const int MAX_SCENT = 1000;
+    private const int START_FADE_TIME = 1000;
 
     public int amount { get;  private set; }
+    private float fadeLeft;
     private SpriteRenderer spriteRenderer;
     private Color color;
     private Color transparent;
@@ -21,19 +23,28 @@ public class Scent : MonoBehaviour
     public void Initialize(float ratio)
     {
         amount = (int)(MAX_SCENT * ratio);
-        print(amount);
+        fadeLeft = START_FADE_TIME;
     }
 
     public void AddRatio(float ratio)
     {
+        print((amount, ratio));
         amount += (int)(MAX_SCENT * ratio);
         if (amount > MAX_SCENT) amount = MAX_SCENT;
+        fadeLeft = START_FADE_TIME;
     }
 
     void Update()
     {
-        amount--;
-        if (amount == 0)
+        if (fadeLeft > 0)
+        {
+            fadeLeft--;
+        }
+        else if (amount > 0)
+        {
+            amount--;
+        }
+        else if (amount == 0)
         {
             Destroy(gameObject);
         }

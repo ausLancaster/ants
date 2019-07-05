@@ -5,9 +5,10 @@ using UnityEngine;
 public class ScentMap : MonoBehaviour
 {
 
-    private const int X_RESOLUTION = 40;
-    private const int Y_RESOLUTION = 20;
+    private const int X_RESOLUTION = 160;
+    private const int Y_RESOLUTION = 80;
     private const bool VISUALISE = true;
+    private const int SCENT_AREA_RADIUS = 3;
 
     [SerializeField]
     private Level level;
@@ -23,6 +24,7 @@ public class ScentMap : MonoBehaviour
         scaleX = Level.WIDTH / ((float)X_RESOLUTION);
         scaleY = Level.HEIGHT / ((float)Y_RESOLUTION);
         scentPrefab.transform.localScale = new Vector3(scaleX, scaleY, 1);
+        AddScentArea(Vector3.zero);
     }
 
     public int GetScentAt(Vector3 position)
@@ -41,15 +43,21 @@ public class ScentMap : MonoBehaviour
     {
         int i; int j;
         (i, j) = GetIndexAt(position);
-        AddScent((i, j), 1f);
-        AddScent((i-1, j), 0.5f);
-        AddScent((i+1, j), 0.5f);
-        AddScent((i, j-1), 0.5f);
-        AddScent((i, j+1), 0.5f);
+        for (int x=-SCENT_AREA_RADIUS; x <= SCENT_AREA_RADIUS; x++)
+        {
+            for (int y = -SCENT_AREA_RADIUS; y <= SCENT_AREA_RADIUS; y++)
+            {
+                if (x*x + y*y <= SCENT_AREA_RADIUS*SCENT_AREA_RADIUS)
+                {
+                    AddScent((i + x, j + y), 1 - ((Mathf.Abs(x) + Mathf.Abs(y)) / ((float)SCENT_AREA_RADIUS)));
+                }
+            }
+        }
     }
 
     public void AddScent((int i, int j) v, float ratio)
     {
+        print(ratio);
 
         if ((map.ContainsKey((v.i, v.j)) && map[(v.i, v.j)] == null) || !map.ContainsKey((v.i, v.j))) {
             Scent scent = Instantiate(scentPrefab);
@@ -63,7 +71,8 @@ public class ScentMap : MonoBehaviour
         }
         if (map.ContainsKey((v.i, v.j)) && map[(v.i, v.j)] != null)
         {
-            map[(v.i, v.j)].AddRatio(ratio);
+            map[(v.i, v.j)].AddRatio(ratio
+                );
         }
     }
 

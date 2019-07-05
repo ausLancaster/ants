@@ -7,8 +7,9 @@ public class AntBehaviour : MonoBehaviour
     private const float MAX_WIGGLE = 30f;
     private const float SEARCH_SPEED = 0.02f;
     private const float RETURN_SPEED = 0.015f;
-    private const float SENSE_ANGLE = 45f;
-    private const float ANGLE_CORRECTION_SPEED = 200f;
+    private const float SENSE_ANGLE = 30f;
+    private const float SENSE_DISTANCE = 0.06f;
+    private const float ANGLE_CORRECTION_SPEED = 800f;//200f;
     private const float CLOSE_NEST_DIST = 3f;
 
     private Level level;
@@ -53,7 +54,47 @@ public class AntBehaviour : MonoBehaviour
     void SearchForFood()
     {
         speed = SEARCH_SPEED;
+        Vector3 posAhead = CalculateMove();
+        posAhead = transform.position + (transform.rotation * Quaternion.identity * (Vector3.up * SENSE_DISTANCE));
+        float scentAhead = scentMap.GetScentAt(posAhead);
+        Vector3 posLeft = CalculateMove(Quaternion.Euler(0, 0, -SENSE_ANGLE));
+        posAhead = transform.position + (transform.rotation * Quaternion.Euler(0, 0, -SENSE_ANGLE) * (Vector3.up * SENSE_DISTANCE));
+        float scentLeft = scentMap.GetScentAt(posLeft);
+        Vector3 posRight = CalculateMove(Quaternion.Euler(0, 0, SENSE_ANGLE));
+        posAhead = transform.position + (transform.rotation * Quaternion.Euler(0, 0, SENSE_ANGLE) * (Vector3.up * SENSE_DISTANCE));
+        float scentRight = scentMap.GetScentAt(posRight);
+        Vector3 posFarLeft = CalculateMove(Quaternion.Euler(0, 0, -SENSE_ANGLE*2));
+        posAhead = transform.position + (transform.rotation * Quaternion.Euler(0, 0, -SENSE_ANGLE) * (Vector3.up * SENSE_DISTANCE));
+        float scentFarLeft = scentMap.GetScentAt(posLeft);
+        Vector3 posFarRight = CalculateMove(Quaternion.Euler(0, 0, SENSE_ANGLE*2));
+        posAhead = transform.position + (transform.rotation * Quaternion.Euler(0, 0, SENSE_ANGLE) * (Vector3.up * SENSE_DISTANCE));
+        float scentFarRight = scentMap.GetScentAt(posRight);
 
+        // choose the position closest to nest
+        Vector3 nextPos = posAhead;
+        float highestScent = scentAhead;
+        Quaternion rot = Quaternion.identity;
+        if (scentLeft > highestScent)
+        {
+            highestScent = scentLeft;
+            rot = Quaternion.Euler(0, 0, -SENSE_ANGLE);
+        }
+        if (scentRight > highestScent)
+        {
+            highestScent = scentRight;
+            rot = Quaternion.Euler(0, 0, SENSE_ANGLE);
+        }
+        if (scentFarLeft > highestScent)
+        {
+            highestScent = scentFarLeft;
+            rot = Quaternion.Euler(0, 0, -SENSE_ANGLE*2);
+        }
+        if (scentFarRight > highestScent)
+        {
+            highestScent = scentFarRight;
+            rot = Quaternion.Euler(0, 0, SENSE_ANGLE*2);
+        }
+        transform.rotation *= rot;
     }
 
     void ReturnToNest()
@@ -65,31 +106,9 @@ public class AntBehaviour : MonoBehaviour
 
     void MoveTowardNest()
     {
-        /*Vector3 posAhead = CalculateMove();
-        float distAhead = (Vector3.zero - posAhead).sqrMagnitude;
-        Vector3 posLeft = CalculateMove(Quaternion.Euler(0, 0, -SENSE_ANGLE));
-        float distLeft = (Vector3.zero - posLeft).sqrMagnitude;
-        Vector3 posRight = CalculateMove(Quaternion.Euler(0, 0, SENSE_ANGLE));
-        float distRight = (Vector3.zero - posRight).sqrMagnitude;
 
-        // choose the position closest to nest
-        Vector3 nextPos = posAhead;
-        float minDist = distAhead;
-        Quaternion rot = Quaternion.identity;
-        if (distLeft < minDist)
-        {
-            nextPos = posLeft;
-            minDist = distLeft;
-            rot = Quaternion.Euler(0, 0, -SENSE_ANGLE);
-        }
-        if (distRight < minDist)
-        {
-            nextPos = posRight;
-            minDist = distRight;
-            rot = Quaternion.Euler(0, 0, SENSE_ANGLE);
-        }*/
         Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, -transform.position);
-        if (Quaternion.Angle(transform.rotation, targetRotation) > 45)
+        if (Quaternion.Angle(transform.rotation, targetRotation) > 30)
         {
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, ANGLE_CORRECTION_SPEED * Time.deltaTime);
         }

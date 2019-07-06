@@ -8,6 +8,7 @@ public class Scent : MonoBehaviour
     private const int START_FADE_TIME = 1000;
 
     public int amount { get;  private set; }
+    public Vector3 foodPosition { get; private set; }
     private float fadeLeft;
     private SpriteRenderer spriteRenderer;
     private Color color;
@@ -20,15 +21,15 @@ public class Scent : MonoBehaviour
         transparent = new Color(color.r, color.g, color.b, 0);
     }
 
-    public void Initialize(float ratio)
+    public void Initialize(float ratio, Vector3 foodPosition)
     {
+        this.foodPosition = foodPosition;
         amount = (int)(MAX_SCENT * ratio);
         fadeLeft = START_FADE_TIME;
     }
 
     public void AddRatio(float ratio)
     {
-        print((amount, ratio));
         amount += (int)(MAX_SCENT * ratio);
         if (amount > MAX_SCENT) amount = MAX_SCENT;
         fadeLeft = START_FADE_TIME;

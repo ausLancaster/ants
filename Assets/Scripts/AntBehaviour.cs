@@ -2,22 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum AntState { ReturnToNest, FollowTrail, SearchForFood }
+
+
 public class AntBehaviour : MonoBehaviour
 {
+    private readonly bool CAN_STEAL = true;
     private const float MAX_WIGGLE = 30f;
     private const float SEARCH_SPEED = 0.02f;
     private const float RETURN_SPEED = 0.015f;
     private const float SENSE_ANGLE = 30f;
     private const float SENSE_DISTANCE = 0.06f;
+    private const float MIN_CORRECTION_ANGLE = 30f;
     private const float ANGLE_CORRECTION_SPEED = 800f;//200f;
     private const float CLOSE_NEST_DIST = 3f;
+    private const float STEAL_CHANCE = 0.3f;
 
     private Level level;
     private ScentMap scentMap;
     private float speed;
     private int steps;
-    private bool carryingObject = false;
-    private GameObject closestNest;
+    [SerializeField]
+    private AntState state = AntState.SearchForFood;
+    private Vector3 closestNestPos = Vector3.zero;
+    private Vector3 targetFoodPos;
+    private List<Vector3> checkedPositions;
     private SpriteRenderer spriteRenderer;
     private Color searchingColor;
     private Color returningColor;
@@ -36,17 +45,24 @@ public class AntBehaviour : MonoBehaviour
             spriteRenderer.color.g + 0.2f,
             spriteRenderer.color.b + 0.2f
             );
+        checkedPositions = new List<Vector3>();
     }
 
     void Update()
     {
-        if (!carryingObject)
+        switch (state)
         {
-            SearchForFood();
-        } else
-        {
-            ReturnToNest();
+            case AntState.FollowTrail:
+                FollowTrail();
+                break;
+            case AntState.SearchForFood:
+                SearchForFood();
+                break;
+            case AntState.ReturnToNest:
+                ReturnToNest();
+                break;
         }
+
         Wiggle();
         steps++;
     }
@@ -54,69 +70,61 @@ public class AntBehaviour : MonoBehaviour
     void SearchForFood()
     {
         speed = SEARCH_SPEED;
-        Vector3 posAhead = CalculateMove();
-        posAhead = transform.position + (transform.rotation * Quaternion.identity * (Vector3.up * SENSE_DISTANCE));
-        float scentAhead = scentMap.GetScentAt(posAhead);
-        Vector3 posLeft = CalculateMove(Quaternion.Euler(0, 0, -SENSE_ANGLE));
-        posAhead = transform.position + (transform.rotation * Quaternion.Euler(0, 0, -SENSE_ANGLE) * (Vector3.up * SENSE_DISTANCE));
-        float scentLeft = scentMap.GetScentAt(posLeft);
-        Vector3 posRight = CalculateMove(Quaternion.Euler(0, 0, SENSE_ANGLE));
-        posAhead = transform.position + (transform.rotation * Quaternion.Euler(0, 0, SENSE_ANGLE) * (Vector3.up * SENSE_DISTANCE));
-        float scentRight = scentMap.GetScentAt(posRight);
-        Vector3 posFarLeft = CalculateMove(Quaternion.Euler(0, 0, -SENSE_ANGLE*2));
-        posAhead = transform.position + (transform.rotation * Quaternion.Euler(0, 0, -SENSE_ANGLE) * (Vector3.up * SENSE_DISTANCE));
-        float scentFarLeft = scentMap.GetScentAt(posLeft);
-        Vector3 posFarRight = CalculateMove(Quaternion.Euler(0, 0, SENSE_ANGLE*2));
-        posAhead = transform.position + (transform.rotation * Quaternion.Euler(0, 0, SENSE_ANGLE) * (Vector3.up * SENSE_DISTANCE));
-        float scentFarRight = scentMap.GetScentAt(posRight);
+        // start following scent if there is a scent at current position
+        ScentMap.Scent scent = scentMap.GetScentAt(transform.position);
+        if (scent != null && !checkedPositions.Contains(scent.foodPosition))
+        {
+            state = AntState.FollowTrail;
+            targetFoodPos = scent.foodPosition;
+            checkedPositions.Add(scent.foodPosition);
+        }
+    }
 
-        // choose the position closest to nest
-        Vector3 nextPos = posAhead;
-        float highestScent = scentAhead;
-        Quaternion rot = Quaternion.identity;
-        if (scentLeft > highestScent)
-        {
-            highestScent = scentLeft;
-            rot = Quaternion.Euler(0, 0, -SENSE_ANGLE);
-        }
-        if (scentRight > highestScent)
-        {
-            highestScent = scentRight;
-            rot = Quaternion.Euler(0, 0, SENSE_ANGLE);
-        }
-        if (scentFarLeft > highestScent)
-        {
-            highestScent = scentFarLeft;
-            rot = Quaternion.Euler(0, 0, -SENSE_ANGLE*2);
-        }
-        if (scentFarRight > highestScent)
-        {
-            highestScent = scentFarRight;
-            rot = Quaternion.Euler(0, 0, SENSE_ANGLE*2);
-        }
-        transform.rotation *= rot;
+    void FollowTrail()
+    {
+        speed = SEARCH_SPEED;
+        MoveTowardLocation(targetFoodPos);
     }
 
     void ReturnToNest()
     {
         speed = RETURN_SPEED;
-        MoveTowardNest();
-        scentMap.AddScentArea(transform.position);
+        MoveTowardLocation(closestNestPos);
+        scentMap.AddScentNeighbours(transform.position, targetFoodPos);
     }
 
-    void MoveTowardNest()
+    void DeliverFood(bool stolen)
+    {
+        if (!stolen) Destroy(carriedObject.gameObject);
+        carriedObject = null;
+        state = AntState.SearchForFood;
+        spriteRenderer.color = searchingColor;
+        ReverseDirection();
+        checkedPositions = new List<Vector3>();
+    }
+
+    void MoveTowardLocation(Vector3 location)
     {
 
-        Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, -transform.position);
-        if (Quaternion.Angle(transform.rotation, targetRotation) > 30)
+        Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, location - transform.position);
+        if (Quaternion.Angle(transform.rotation, targetRotation) > MIN_CORRECTION_ANGLE)
         {
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, ANGLE_CORRECTION_SPEED * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation, 
+                targetRotation, 
+                ANGLE_CORRECTION_SPEED * Time.deltaTime
+                );
         }
     }
 
     // randomly change direction to give "wiggle" effect, move forward
     void Wiggle()
     {
+        // check if ant has reached end of food trail
+        if ((state == AntState.FollowTrail) && ((transform.position - targetFoodPos).sqrMagnitude < (speed*2)*(speed*2))) {
+            transform.position = targetFoodPos;
+            state = AntState.SearchForFood;
+        }
         if (steps%4 == 0)
         {
             transform.Rotate(Vector3.forward * Random.Range(-MAX_WIGGLE, MAX_WIGGLE), Space.Self);
@@ -150,14 +158,12 @@ public class AntBehaviour : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (carryingObject)
+        if (state == AntState.ReturnToNest)
         {
             if (collider.gameObject.CompareTag("Nest"))
             {
-                Destroy(carriedObject.gameObject);
-                carryingObject = false;
-                spriteRenderer.color = searchingColor;
-                ReverseDirection();
+                // drop off food and start searching for food again
+                DeliverFood(false);
             }
         } else
         {
@@ -165,14 +171,22 @@ public class AntBehaviour : MonoBehaviour
             {
                 carriedObject = collider.gameObject.GetComponent<Carriable>();
                 if (carriedObject == null) throw new System.Exception("Tried to pick up food that has no Carriable script");
-                if (!carriedObject.carried)
+                if (!(!CAN_STEAL && carriedObject.isCarried) && 
+                    !(CAN_STEAL && carriedObject.isCarried && !(UnityEngine.Random.value < STEAL_CHANCE)))
                 {
+                    // pick up food and return to nest
+                    if (carriedObject.isCarried)
+                    {
+                        carriedObject.carrier.DeliverFood(true);
+                    }
                     carriedObject.transform.parent = transform;
                     carriedObject.transform.localPosition = jawsOffset;
                     carriedObject.transform.rotation = transform.rotation;
-                    carriedObject.GetComponent<Carriable>().carried = true;
-                    carryingObject = true;
+                    carriedObject.carrier = this;
+                    carriedObject.GetComponent<Carriable>().isCarried = true;
+                    state = AntState.ReturnToNest;
                     spriteRenderer.color = returningColor;
+                    targetFoodPos = carriedObject.transform.position;
                 }
             }
         }

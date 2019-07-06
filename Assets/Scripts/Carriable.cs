@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class Carriable : MonoBehaviour
 {
-    public bool carried { get; set; }
+    public bool isCarried { get; set; }
+    public AntBehaviour carrier { get; set; }
 }

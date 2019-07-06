@@ -1,86 +1,129 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ScentMap : MonoBehaviour
 {
 
-    private const int X_RESOLUTION = 160;
-    private const int Y_RESOLUTION = 80;
+    private const int X_RESOLUTION = 64;
+    private const int Y_RESOLUTION = 32;
     private const bool VISUALISE = true;
     private const int SCENT_AREA_RADIUS = 3;
+    private const int MAX_SCENT = 300;
 
     [SerializeField]
-    private Level level;
-    [SerializeField]
-    private Scent scentPrefab;
-    private Dictionary<(int, int), Scent> map;
+    private readonly Level level;
+    private Dictionary<Coordinate, Scent> map;
     private float scaleX;
     private float scaleY;
 
     void Start()
     {
-        map = new Dictionary<(int, int), Scent>();
+        map = new Dictionary<Coordinate, Scent>();
         scaleX = Level.WIDTH / ((float)X_RESOLUTION);
         scaleY = Level.HEIGHT / ((float)Y_RESOLUTION);
-        scentPrefab.transform.localScale = new Vector3(scaleX, scaleY, 1);
-        AddScentArea(Vector3.zero);
     }
 
-    public int GetScentAt(Vector3 position)
+    private void Update()
     {
-        int i; int j;
-        (i, j) = GetIndexAt(position);
-        if (map.ContainsKey((i, j))) {
-            return map[(i, j)].amount;
-        } else
+        foreach (Coordinate key in map.Keys.ToList())
         {
-            return 0;
+            if (map.ContainsKey(key))
+            {
+                map[key].amount--;
+                if (map[key].amount == 0)
+                {
+                    map.Remove(key);
+                }
+            }
         }
     }
 
-    public void AddScentArea(Vector3 position)
+    public Scent GetScentAt(Vector3 position)
     {
-        int i; int j;
-        (i, j) = GetIndexAt(position);
+        Coordinate coord = GetIndexAt(position);
+        if (map.ContainsKey(coord)) {
+            return map[coord];
+        } else
+        {
+            return null;
+        }
+    }
+
+    public void AddScentNeighbours(Vector3 position, Vector3 foodPos)
+    {
+        Coordinate coord = GetIndexAt(position);
+        AddScent(coord, 1f, foodPos);
+        AddScent(new Coordinate(coord.x - 1, coord.y), 1f, foodPos);
+        AddScent(new Coordinate(coord.x + 1, coord.y), 1f, foodPos);
+        AddScent(new Coordinate(coord.x, coord.y - 1), 1f, foodPos);
+        AddScent(new Coordinate(coord.x, coord.y + 1), 1f, foodPos);
+    }
+
+    public void AddScentArea(Vector3 position, Vector3 foodPos)
+    {
+        Coordinate coord = GetIndexAt(position);
         for (int x=-SCENT_AREA_RADIUS; x <= SCENT_AREA_RADIUS; x++)
         {
             for (int y = -SCENT_AREA_RADIUS; y <= SCENT_AREA_RADIUS; y++)
             {
                 if (x*x + y*y <= SCENT_AREA_RADIUS*SCENT_AREA_RADIUS)
                 {
-                    AddScent((i + x, j + y), 1 - ((Mathf.Abs(x) + Mathf.Abs(y)) / ((float)SCENT_AREA_RADIUS)));
+                    AddScent(new Coordinate(coord.x + x, coord.y + y), 1 - ((Mathf.Abs(x) + Mathf.Abs(y)) / ((float)SCENT_AREA_RADIUS)), foodPos);
                 }
             }
         }
     }
 
-    public void AddScent((int i, int j) v, float ratio)
+    public void AddScent(Coordinate coord, float ratio, Vector3 foodPos)
     {
-        print(ratio);
-
-        if ((map.ContainsKey((v.i, v.j)) && map[(v.i, v.j)] == null) || !map.ContainsKey((v.i, v.j))) {
-            Scent scent = Instantiate(scentPrefab);
-            scent.Initialize(ratio);
-            scent.transform.position = new Vector3(
-                ((v.i + 0.5f) * scaleX) + Level.MIN_X,
-                ((v.j + 0.5f) * scaleY) + Level.MIN_Y,
-                0
-                );
-            map[(v.i, v.j)] = scent;
-        }
-        if (map.ContainsKey((v.i, v.j)) && map[(v.i, v.j)] != null)
+        map[coord] = new Scent(coord, (int)(ratio * MAX_SCENT), foodPos);
+        /*if ((map.ContainsKey(coord) && map[coord] == null) || !map.ContainsKey(coord))
         {
-            map[(v.i, v.j)].AddRatio(ratio
-                );
+            Scent scent = new Scent(coord, (int) (ratio * MAX_SCENT), foodPos);
+            map[coord] = scent;
         }
+        if (map.ContainsKey(coord) && map[coord] != null)
+        {
+            map[coord].amount += (int) (ratio * MAX_SCENT);
+            if (map[coord].amount > MAX_SCENT)
+            {
+                map[coord].amount = MAX_SCENT;
+            }
+        }*/
     }
 
-    public (int, int) GetIndexAt(Vector3 position)
+    public Coordinate GetIndexAt(Vector3 position)
     {
         int i = (int)((position.x - Level.MIN_X) / scaleX);
         int j = (int)((position.y - Level.MIN_Y) / scaleY);
 
-        return (i, j);
+        return new Coordinate(i, j);
+    }
+
+    public struct Coordinate
+    {
+        public int x;
+        public int y;
+
+        public Coordinate(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    public class Scent
+    {
+        public Coordinate pos;
+        public int amount;
+        public Vector3 foodPosition;
+
+        public Scent(Coordinate pos, int amount, Vector3 foodPosition)
+        {
+            this.pos = pos;
+            this.amount = amount;
+            this.foodPosition = foodPosition;
+        }
     }
 }

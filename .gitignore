@@ -1,1 +1,8 @@
-Temp/
+./Temp
+./Library
+./obj
+
+*.*proj
+*.sln
+
+.DS_Stores

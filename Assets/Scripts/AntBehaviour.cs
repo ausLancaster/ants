@@ -17,6 +17,11 @@ public class AntBehaviour : MonoBehaviour
     private const float ANGLE_CORRECTION_SPEED = 800f;//200f;
     private const float CLOSE_NEST_DIST = 3f;
     private const float STEAL_CHANCE = 0.3f;
+    private const int PAUSE_MIN = 10;
+    private const int PAUSE_MAX = 30;
+    private const int PAUSE_COOLDOWN_MIN = 50;
+    private const int PAUSE_COOLDOWN_MAX = 2000;
+    private const float PAUSE_FREQ = 0.1f;
 
     private Level level;
     private ScentMap scentMap;
@@ -32,6 +37,9 @@ public class AntBehaviour : MonoBehaviour
     private Color returningColor;
     private Vector3 jawsOffset = new Vector3(0, 0.17f, 0);
     private Carriable carriedObject;
+    private int pauseCounter;
+    private int pauseDuration;
+    private bool paused;
 
     public void Initialize(Level level, ScentMap scentMap)
     {
@@ -46,6 +54,8 @@ public class AntBehaviour : MonoBehaviour
             spriteRenderer.color.b + 0.2f
             );
         checkedPositions = new List<Vector3>();
+        pauseCounter = UnityEngine.Random.Range(PAUSE_MIN, PAUSE_MAX);
+        paused = false;
     }
 
     void Update()
@@ -63,7 +73,12 @@ public class AntBehaviour : MonoBehaviour
                 break;
         }
 
-        Wiggle();
+        if (!paused)
+        {
+            Wiggle();
+        }
+        PauseBehaviour();
+
         steps++;
     }
 
@@ -150,26 +165,58 @@ public class AntBehaviour : MonoBehaviour
         return transform.position + (transform.rotation * direction * (Vector3.up * speed));
     }
 
+    void PauseBehaviour() {
+        if (paused)
+        {
+            if (pauseCounter <= 0)
+            {
+                paused = false;
+                pauseCounter = UnityEngine.Random.Range(PAUSE_COOLDOWN_MIN, PAUSE_COOLDOWN_MAX); ;
+            }
+        }
+        else
+        {
+            if (pauseCounter <= 0)
+            {
+                paused = true;
+                pauseCounter = UnityEngine.Random.Range(PAUSE_MIN, PAUSE_MAX);
+            }
+        }
+        pauseCounter--;
+    }
+
     // is the next move valid?
     bool CanMove()
     {
         return level.ContainsWithinBounds(CalculateMove());
     }
 
-    private void OnTriggerEnter2D(Collider2D collider)
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (state == AntState.ReturnToNest)
         {
-            if (collider.gameObject.CompareTag("Nest"))
+            if (other.gameObject.CompareTag("Nest"))
+            {
+                // drop off food and start searching for food again
+                DeliverFood(false);
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (state == AntState.ReturnToNest)
+        {
+            if (other.gameObject.CompareTag("Nest"))
             {
                 // drop off food and start searching for food again
                 DeliverFood(false);
             }
         } else
         {
-            if (collider.gameObject.CompareTag("Food"))
+            if (other.gameObject.CompareTag("Food"))
             {
-                carriedObject = collider.gameObject.GetComponent<Carriable>();
+                carriedObject = other.gameObject.GetComponent<Carriable>();
                 if (carriedObject == null) throw new System.Exception("Tried to pick up food that has no Carriable script");
                 if (!(!CAN_STEAL && carriedObject.isCarried) && 
                     !(CAN_STEAL && carriedObject.isCarried && !(UnityEngine.Random.value < STEAL_CHANCE)))

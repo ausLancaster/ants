@@ -5,7 +5,7 @@ using System;
 
 public class Level : MonoBehaviour
 {
-    private const int ANTS_NUM = 100;
+    private const int ANTS_NUM = 5;
     private const int FOOD_PATCH_NUM = 3; // must be no greater than 9
     public const int MIN_X = -10;
     public const int MAX_X = 10;

@@ -90,7 +90,7 @@ public class AntBehaviour : MonoBehaviour
     void ReturnToNest()
     {
         speed = RETURN_SPEED;
-        MoveTowardLocation(closestNestPos);
+        if (steps % 4 == 0) MoveTowardLocation(closestNestPos);
         scentMap.AddScentNeighbours(transform.position, targetFoodPos);
     }
 

@@ -49,6 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: 3
+  speedModifier: 1
+  collidingWith: {fileID: 0}
 --- !u!58 &1968311737
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -157,7 +159,7 @@ HingeJoint2D:
   m_UseLimits: 0
   m_AngleLimits:
     m_LowerAngle: 0
-    m_UpperAngle: 359
+    m_UpperAngle: 0
 --- !u!61 &-6221135194467008866
 BoxCollider2D:
   m_ObjectHideFlags: 0

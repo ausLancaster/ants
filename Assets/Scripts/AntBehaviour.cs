@@ -19,6 +19,7 @@ public class AntBehaviour : MonoBehaviour
     private const float STEAL_CHANCE = 0.3f;
     private const float PULL_FORCE = 0.25f;
     private const float COLLISION_SPEED_MODIFIER = 0.1f;
+    private const float PULL_WIGGLE = 0.25f;
 
     private Level level;
     private ScentMap scentMap;
@@ -124,25 +125,43 @@ public class AntBehaviour : MonoBehaviour
     {
         rb.AddForce((closestNestPos - transform.position + transform.rotation * jawsOffset).normalized * PULL_FORCE);
 
-        if (steps % 4 == 0)
+        if ((steps / 8)%2 == 0)
         {
-            transform.RotateAround(transform.position + transform.rotation * jawsOffset, Vector3.forward, UnityEngine.Random.Range(-MAX_WIGGLE/4, MAX_WIGGLE/4));
-            /*
-            int dir = ((steps / 4) % 4) / 2 == 0 ? 1 : -1;
-            transform.RotateAround(transform.position + transform.rotation * jawsOffset, Vector3.forward, dir * MAX_WIGGLE);
-            */           
+            rb.AddTorque(PULL_WIGGLE);
+        }
+        else
+        {
+            rb.AddTorque(-PULL_WIGGLE);
+        }
+
+        /*if (steps % 4 == 0)
+        {
+            transform.RotateAround(transform.position + transform.rotation * jawsOffset, Vector3.forward, UnityEngine.Random.Range(-MAX_WIGGLE/4, MAX_WIGGLE/4));       
+        }*/
+    }
+
+    private void DeliverFood()
+    {
+        if (carriedObject)
+        {
+            Destroy(carriedObject.gameObject);
+            carriedObject.RemoveFoodFromCarriers();
         }
     }
 
-    void DeliverFood(bool stolen)
+    private void StealFood()
     {
-        if (!stolen) Destroy(carriedObject.gameObject);
+        carriedObject.RemoveFoodFromCarriers(this);
+    }
+
+    public void LoseFood()
+    {
         carriedObject = null;
         state = AntState.SearchForFood;
         spriteRenderer.color = searchingColor;
         ReverseDirection();
         checkedPositions = new List<Vector3>();
-        //speedModifier = 1f;
+        hinge.connectedBody = null;
     }
 
     void MoveTowardLocation(Vector3 location)
@@ -200,12 +219,12 @@ public class AntBehaviour : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (state == AntState.ReturnToNest)
+        if (state == AntState.ReturnToNest || state == AntState.DragToNest)
         {
             if (other.gameObject.CompareTag("Nest"))
             {
                 // drop off food and start searching for food again
-                DeliverFood(false);
+                DeliverFood();
             }
         }
     }
@@ -217,27 +236,33 @@ public class AntBehaviour : MonoBehaviour
             if (other.gameObject.CompareTag("Nest"))
             {
                 // drop off food and start searching for food again
-                DeliverFood(false);
+                DeliverFood();
+                if (carriedObject)
+                {
+                    throw new System.Exception("Delivered food but still carrying something");
+                }
             }
         } else
         {
             if (other.gameObject.CompareTag("Food"))
             {
-                carriedObject = other.gameObject.GetComponent<Carriable>();
-                if (carriedObject == null) throw new System.Exception("Tried to pick up food that has no Carriable script");
-                if (!(!CAN_STEAL && carriedObject.isCarried) && 
-                    !(CAN_STEAL && carriedObject.isCarried && !(UnityEngine.Random.value < STEAL_CHANCE)))
+                Carriable otherCarriable = other.gameObject.GetComponent<Carriable>();
+                if (otherCarriable == null) throw new System.Exception("Tried to pick up food that has no Carriable script");
+                if (!(!CAN_STEAL && otherCarriable.isCarried) && 
+                    !(CAN_STEAL && otherCarriable.isCarried && !(UnityEngine.Random.value < STEAL_CHANCE)))
                 {
-                    // pick up food and return to nest
+                    carriedObject = otherCarriable;
                     if (carriedObject.isCarried)
                     {
-                        carriedObject.carrier.DeliverFood(true);
+                        // steal food
+                        StealFood();
                     }
+                    // pick up food and return to nest
                     carriedObject.transform.parent = transform;
                     carriedObject.transform.localPosition = jawsOffset;
                     carriedObject.transform.rotation = transform.rotation;
-                    carriedObject.carrier = this;
-                    carriedObject.GetComponent<Carriable>().isCarried = true;
+                    carriedObject.AddCarrier(this);
+                    carriedObject.isCarried = true;
                     state = AntState.ReturnToNest;
                     spriteRenderer.color = returningColor;
                     targetFoodPos = carriedObject.transform.position;
@@ -251,21 +276,19 @@ public class AntBehaviour : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Food") && !(state == AntState.ReturnToNest || state == AntState.DragToNest))
         {
+            // pick up big food
             carriedObject = collision.gameObject.GetComponent<Carriable>();
             if (!carriedObject) throw new System.Exception("Tried to pick up food that has no Carriable script");
-            if (!carriedObject.isCarried)
-            {
-                Vector3 hingePoint = new Vector3(collision.GetContact(0).point.x, collision.GetContact(0).point.y, 0);
-                transform.position = hingePoint - transform.rotation * jawsOffset;
-                Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
-                if (!rb) throw new System.Exception("Tried to pick up food that has no Rigidbody");
-                hinge.connectedBody = rb;
-                //hinge.anchor = hingePoint;
-                carriedObject.GetComponent<Carriable>().isCarried = true;
-                state = AntState.DragToNest;
-                spriteRenderer.color = returningColor;
-                targetFoodPos = carriedObject.transform.position;
-            }
+            Vector3 hingePoint = new Vector3(collision.GetContact(0).point.x, collision.GetContact(0).point.y, 0);
+            transform.position = hingePoint - transform.rotation * jawsOffset;
+            Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
+            if (!rb) throw new System.Exception("Tried to pick up food that has no Rigidbody");
+            hinge.connectedBody = rb;
+            carriedObject.AddCarrier(this);
+            carriedObject.isCarried = true;
+            state = AntState.DragToNest;
+            spriteRenderer.color = returningColor;
+            targetFoodPos = carriedObject.transform.position;
         }
     }
 
@@ -277,10 +300,4 @@ public class AntBehaviour : MonoBehaviour
             isSlowedByCollision = true;
         }
     }
-    
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        //speedModifier = 1f;
-    }
-
 }

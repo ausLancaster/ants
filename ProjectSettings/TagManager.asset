@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Food
   - Nest
+  - Ant
   layers:
   - Default
   - TransparentFX

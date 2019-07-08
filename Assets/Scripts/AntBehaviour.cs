@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AntState { ReturnToNest, FollowTrail, SearchForFood }
+public enum AntState { ReturnToNest, DragToNest, FollowTrail, SearchForFood }
 
 
 public class AntBehaviour : MonoBehaviour
@@ -17,6 +17,8 @@ public class AntBehaviour : MonoBehaviour
     private const float ANGLE_CORRECTION_SPEED = 800f;//200f;
     private const float CLOSE_NEST_DIST = 3f;
     private const float STEAL_CHANCE = 0.3f;
+    private const float PULL_FORCE = 0.25f;
+    private const float COLLISION_SPEED_MODIFIER = 0.1f;
 
     private Level level;
     private ScentMap scentMap;
@@ -30,8 +32,15 @@ public class AntBehaviour : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Color searchingColor;
     private Color returningColor;
-    private Vector3 jawsOffset = new Vector3(0, 0.17f, 0);
+    private Vector3 jawsOffset = new Vector3(0, 0.16f, 0);
     private Carriable carriedObject;
+    private HingeJoint2D hinge;
+    private Rigidbody2D rb;
+    [SerializeField]
+    private float speedModifier = 1;
+    [SerializeField]
+    private GameObject collidingWith;
+    private bool isSlowedByCollision = false;
 
     public void Initialize(Level level, ScentMap scentMap)
     {
@@ -40,12 +49,15 @@ public class AntBehaviour : MonoBehaviour
         steps = 0;
         spriteRenderer = GetComponent<SpriteRenderer>();
         searchingColor = spriteRenderer.color;
-        returningColor = new Color(
+        returningColor = searchingColor;
+        /*returningColor = new Color(
             spriteRenderer.color.r + 0.2f,
             spriteRenderer.color.g + 0.2f,
             spriteRenderer.color.b + 0.2f
-            );
+            );*/
         checkedPositions = new List<Vector3>();
+        hinge = GetComponent<HingeJoint2D>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -54,23 +66,37 @@ public class AntBehaviour : MonoBehaviour
         {
             case AntState.FollowTrail:
                 FollowTrail();
+                Wiggle();
                 break;
             case AntState.SearchForFood:
                 SearchForFood();
+                Wiggle();
                 break;
             case AntState.ReturnToNest:
                 ReturnToNest();
+                Wiggle();
+                break;
+            case AntState.DragToNest:
+                DragFoodHome();
                 break;
         }
+        if (isSlowedByCollision)
+        {
+            speedModifier = COLLISION_SPEED_MODIFIER;
+        }
+        else
+        {
+            speedModifier = 1f;
+        }
+        isSlowedByCollision = false;
 
-        Wiggle();
 
         steps++;
     }
 
     void SearchForFood()
     {
-        speed = SEARCH_SPEED;
+        speed = SEARCH_SPEED * speedModifier;
         // start following scent if there is a scent at current position
         ScentMap.Scent scent = scentMap.GetScentAt(transform.position);
         if (scent != null && !checkedPositions.Contains(scent.foodPosition))
@@ -83,15 +109,29 @@ public class AntBehaviour : MonoBehaviour
 
     void FollowTrail()
     {
-        speed = SEARCH_SPEED;
+        speed = SEARCH_SPEED * speedModifier;
         MoveTowardLocation(targetFoodPos);
     }
 
     void ReturnToNest()
     {
-        speed = RETURN_SPEED;
+        speed = RETURN_SPEED * speedModifier;
         if (steps % 4 == 0) MoveTowardLocation(closestNestPos);
         scentMap.AddScentNeighbours(transform.position, targetFoodPos);
+    }
+
+    void DragFoodHome()
+    {
+        rb.AddForce((closestNestPos - transform.position + transform.rotation * jawsOffset).normalized * PULL_FORCE);
+
+        if (steps % 4 == 0)
+        {
+            transform.RotateAround(transform.position + transform.rotation * jawsOffset, Vector3.forward, UnityEngine.Random.Range(-MAX_WIGGLE/4, MAX_WIGGLE/4));
+            /*
+            int dir = ((steps / 4) % 4) / 2 == 0 ? 1 : -1;
+            transform.RotateAround(transform.position + transform.rotation * jawsOffset, Vector3.forward, dir * MAX_WIGGLE);
+            */           
+        }
     }
 
     void DeliverFood(bool stolen)
@@ -102,6 +142,7 @@ public class AntBehaviour : MonoBehaviour
         spriteRenderer.color = searchingColor;
         ReverseDirection();
         checkedPositions = new List<Vector3>();
+        //speedModifier = 1f;
     }
 
     void MoveTowardLocation(Vector3 location)
@@ -171,7 +212,7 @@ public class AntBehaviour : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (state == AntState.ReturnToNest)
+        if (state == AntState.ReturnToNest || state == AntState.DragToNest)
         {
             if (other.gameObject.CompareTag("Nest"))
             {
@@ -205,4 +246,41 @@ public class AntBehaviour : MonoBehaviour
         }
 
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Food") && !(state == AntState.ReturnToNest || state == AntState.DragToNest))
+        {
+            carriedObject = collision.gameObject.GetComponent<Carriable>();
+            if (!carriedObject) throw new System.Exception("Tried to pick up food that has no Carriable script");
+            if (!carriedObject.isCarried)
+            {
+                Vector3 hingePoint = new Vector3(collision.GetContact(0).point.x, collision.GetContact(0).point.y, 0);
+                transform.position = hingePoint - transform.rotation * jawsOffset;
+                Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
+                if (!rb) throw new System.Exception("Tried to pick up food that has no Rigidbody");
+                hinge.connectedBody = rb;
+                //hinge.anchor = hingePoint;
+                carriedObject.GetComponent<Carriable>().isCarried = true;
+                state = AntState.DragToNest;
+                spriteRenderer.color = returningColor;
+                targetFoodPos = carriedObject.transform.position;
+            }
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (!collision.gameObject.CompareTag("Ant") && !collision.gameObject.CompareTag("Nest"))
+        {
+            collidingWith = collision.gameObject;
+            isSlowedByCollision = true;
+        }
+    }
+    
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        //speedModifier = 1f;
+    }
+
 }

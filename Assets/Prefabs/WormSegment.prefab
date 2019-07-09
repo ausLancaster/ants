@@ -125,7 +125,7 @@ HingeJoint2D:
     m_MaximumMotorForce: 10000
   m_UseLimits: 1
   m_AngleLimits:
-    m_LowerAngle: 0
+    m_LowerAngle: -90
     m_UpperAngle: 90
 --- !u!61 &4859663689152320892
 BoxCollider2D:

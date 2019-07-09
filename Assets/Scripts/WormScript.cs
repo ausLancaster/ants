@@ -16,29 +16,36 @@ public class WormScript : MonoBehaviour
     private Transform headTransform;
     [SerializeField]
     private Transform tailTransform;
+    private List<Rigidbody2D> segmentRbs;
+    private List<Transform> segmentTransforms;
     private static int steps;
 
     // Start is called before the first frame update
     void Start()
     {
         steps = 0;
+        segmentTransforms = new List<Transform>();
+        segmentRbs = new List<Rigidbody2D>();
+        foreach (Transform child in transform)
+        {
+            segmentTransforms.Add(child);
+            segmentRbs.Add(child.GetComponent<Rigidbody2D>());
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        int instruction = (steps / PUSH_DURATION) % (WAITS_TO_PUSHES * 2);
+        int instruction = (steps / PUSH_DURATION) % (WAITS_TO_PUSHES);
         if (instruction == 0)
         {
-            Vector2 dir = GetDirectionToMouse(new Vector2(tailTransform.position.x, tailTransform.position.y));
-            // push tail
-            tailRB.AddForce((PUSH_FORCE * 0.5f) * dir);
-        }
-        else if (instruction == WAITS_TO_PUSHES)
-        {
-            Vector2 dir = GetDirectionToMouse(new Vector2(headTransform.position.x, headTransform.position.y));
-            // push tail
-            headRB.AddForce(PUSH_FORCE * dir);
+            // pick random segment
+            int segmentId = UnityEngine.Random.Range(0, segmentTransforms.Count);
+            Vector3 v = segmentTransforms[segmentId].position;
+            Rigidbody2D rb = segmentRbs[segmentId];
+            // push segment
+            Vector2 dir = GetDirectionToMouse(new Vector2(v.x, v.y));
+            rb.AddForce(PUSH_FORCE * dir);
         }
 
 

@@ -790,7 +790,7 @@ PrefabInstance:
     - target: {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
-      value: -0.29999995
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
         type: 3}
@@ -874,7 +874,7 @@ PrefabInstance:
     - target: {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
-      value: -0.30000004
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
         type: 3}
@@ -958,7 +958,7 @@ PrefabInstance:
     - target: {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
-      value: -0.29999995
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
         type: 3}
@@ -1042,7 +1042,7 @@ PrefabInstance:
     - target: {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
-      value: -0.29999995
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
         type: 3}
@@ -1080,6 +1080,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 170e2518e8e5c40e48701754565ef272, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minHeadTailSeparation: 1
   headRB: {fileID: 1981847706}
   tailRB: {fileID: 725296459}
   headTransform: {fileID: 1981847710}
@@ -1179,7 +1180,7 @@ PrefabInstance:
     - target: {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
         type: 3}
       propertyPath: m_ConnectedAnchor.y
-      value: -0.30000004
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
         type: 3}

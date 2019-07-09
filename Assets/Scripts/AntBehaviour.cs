@@ -17,7 +17,7 @@ public class AntBehaviour : MonoBehaviour
     private const float ANGLE_CORRECTION_SPEED = 800f;//200f;
     private const float CLOSE_NEST_DIST = 3f;
     private const float STEAL_CHANCE = 0.3f;
-    private const float PULL_FORCE = 0.25f;
+    private const float PULL_FORCE = 1.25f; // 0.25f
     private const float COLLISION_SPEED_MODIFIER = 0.1f;
     private const float PULL_WIGGLE = 0.25f;
 

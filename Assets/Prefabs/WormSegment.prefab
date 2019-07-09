@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 4083081972066818637}
   - component: {fileID: 4720575184019288132}
   - component: {fileID: 4859663689152320892}
+  - component: {fileID: 2241245911347353875}
   m_Layer: 0
   m_Name: WormSegment
-  m_TagString: Untagged
+  m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -153,3 +154,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.07, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2241245911347353875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8285506329679138348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 423ea161bbd10e345a98a2947e0f1d09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

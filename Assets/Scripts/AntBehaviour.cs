@@ -17,7 +17,7 @@ public class AntBehaviour : MonoBehaviour
     private const float ANGLE_CORRECTION_SPEED = 800f;//200f;
     private const float CLOSE_NEST_DIST = 3f;
     private const float STEAL_CHANCE = 0.3f;
-    private const float PULL_FORCE = 1.25f; // 0.25f
+    private const float PULL_FORCE = 1.25f;
     private const float COLLISION_SPEED_MODIFIER = 0.1f;
     private const float PULL_WIGGLE = 0.25f;
 
@@ -190,8 +190,14 @@ public class AntBehaviour : MonoBehaviour
         {
             transform.Rotate(Vector3.forward * Random.Range(-MAX_WIGGLE, MAX_WIGGLE), Space.Self);
         }
+        // if the direction the ant is moving will put it out of bounds, reverse direciton
         if (!CanMove()) ReverseDirection();
+
+        // move
         transform.position = CalculateMove();
+
+        // move ant within bounds if it has been pushed off the map
+        //transform.position = level.MoveToWithinBounds(transform.position);
     }
 
     void ReverseDirection()

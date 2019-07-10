@@ -190,8 +190,10 @@ public class AntBehaviour : MonoBehaviour
         {
             transform.Rotate(Vector3.forward * Random.Range(-MAX_WIGGLE, MAX_WIGGLE), Space.Self);
         }
-        if (!CanMove()) ReverseDirection();
         transform.position = CalculateMove();
+        bool moved;
+        transform.position = level.MoveToWithinBounds(transform.position, out moved);
+        if (moved) ReverseDirection();
     }
 
     void ReverseDirection()

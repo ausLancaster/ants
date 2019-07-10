@@ -5,7 +5,7 @@ using System;
 
 public class Level : MonoBehaviour
 {
-    private const int ANTS_NUM = 50;
+    private const int ANTS_NUM = 150;
     private const int FOOD_PATCH_NUM = 3; // must be no greater than 9
     public const int MIN_X = -10;
     public const int MAX_X = 10;
@@ -51,5 +51,29 @@ public class Level : MonoBehaviour
     public bool ContainsWithinBounds(Vector3 pos)
     {
         return pos.x >= MIN_X && pos.x <= MAX_X && pos.y >= MIN_Y && pos.y <= MAX_Y;
+    }
+
+    public Vector3 MoveToWithinBounds(Vector3 pos, out bool moved)
+    {
+        moved = false;
+        if (pos.x < MIN_X)
+        {
+            moved = true;
+            pos.x = MIN_X;
+        } else if (pos.x > MAX_X)
+        {
+            moved = true;
+            pos.x = MAX_X;
+        }
+        if (pos.y < MIN_Y)
+        {
+            moved = true;
+            pos.y = MIN_Y;
+        } else if (pos.y > MAX_Y)
+        {
+            moved = true;
+            pos.y = MAX_Y;
+        }
+        return pos;
     }
 }

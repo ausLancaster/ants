@@ -6,6 +6,7 @@ public class Carriable : MonoBehaviour
 {
     public bool isCarried { get; set; }
     public List<AntBehaviour> carriers { get; set; }
+    public bool delivered {get; private set; }
 
     private void Awake()
     {
@@ -18,6 +19,7 @@ public class Carriable : MonoBehaviour
     }
     public void RemoveFoodFromCarriers(AntBehaviour except=null)
     {
+        delivered = true;
         foreach (AntBehaviour c in carriers)
         {
             if (!(c == except))

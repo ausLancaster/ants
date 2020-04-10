@@ -7,7 +7,7 @@ public enum AntState { ReturnToNest, DragToNest, FollowTrail, SearchForFood }
 
 public class AntBehaviour : MonoBehaviour
 {
-    private readonly bool CAN_STEAL = true;
+    private readonly bool CAN_STEAL = false;
     private const float MAX_WIGGLE = 30f;
     private const float SEARCH_SPEED = 0.02f;
     private const float RETURN_SPEED = 0.015f;
@@ -144,8 +144,9 @@ public class AntBehaviour : MonoBehaviour
     {
         if (carriedObject)
         {
-            Destroy(carriedObject.gameObject);
+            GameObject toDestroy = carriedObject.gameObject;
             carriedObject.RemoveFoodFromCarriers();
+            Destroy(toDestroy);
         }
     }
 
@@ -280,21 +281,29 @@ public class AntBehaviour : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Food") && !(state == AntState.ReturnToNest || state == AntState.DragToNest))
+        if (collision.gameObject.CompareTag("Food")
+            && !(state == AntState.ReturnToNest || state == AntState.DragToNest))
         {
             // pick up big food
             carriedObject = collision.gameObject.GetComponent<Carriable>();
             if (!carriedObject) throw new System.Exception("Tried to pick up food that has no Carriable script");
-            Vector3 hingePoint = new Vector3(collision.GetContact(0).point.x, collision.GetContact(0).point.y, 0);
-            transform.position = hingePoint - transform.rotation * jawsOffset;
-            Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
-            if (!rb) throw new System.Exception("Tried to pick up food that has no Rigidbody");
-            hinge.connectedBody = rb;
-            carriedObject.AddCarrier(this);
-            carriedObject.isCarried = true;
-            state = AntState.DragToNest;
-            spriteRenderer.color = returningColor;
-            targetFoodPos = carriedObject.transform.position;
+            if (!carriedObject.delivered)
+            {
+                Vector3 hingePoint = new Vector3(collision.GetContact(0).point.x, collision.GetContact(0).point.y, 0);
+                transform.position = hingePoint - transform.rotation * jawsOffset;
+                Rigidbody2D otherRb = collision.gameObject.GetComponent<Rigidbody2D>();
+                if (!otherRb) throw new System.Exception("Tried to pick up food that has no Rigidbody");
+                hinge.connectedBody = otherRb;
+                carriedObject.AddCarrier(this);
+                carriedObject.isCarried = true;
+                state = AntState.DragToNest;
+                spriteRenderer.color = returningColor;
+                targetFoodPos = carriedObject.transform.position;
+            }
+            else
+            {
+                carriedObject = null;
+            }
         }
     }
 

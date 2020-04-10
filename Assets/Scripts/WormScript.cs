@@ -43,39 +43,46 @@ public class WormScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int instruction = (steps / PUSH_DURATION) % WAITS_TO_PUSHES;
-        if (instruction == 0)
+        if (headTransform != null && tailTransform != null)
         {
-            if (steps % PUSH_DURATION == 0)
+            int instruction = (steps / PUSH_DURATION) % WAITS_TO_PUSHES;
+            if (instruction == 0)
             {
-                // pick which segment to push with
-
-                float headDist = GetDirectionToMouse(new Vector2(headTransform.position.x, headTransform.position.y), false).magnitude;
-                float tailDist = GetDirectionToMouse(new Vector2(tailTransform.position.x, tailTransform.position.y), false).magnitude;
-
-                if (tailDist - headDist < minHeadTailSeparation)
+                if (steps % PUSH_DURATION == 0)
                 {
-                    // choose head
-                    selectedTransform = headTransform;
-                    selectedRB = headRB;
+                    // pick which segment to push with
+
+                    float headDist = GetDirectionToMouse(new Vector2(headTransform.position.x, headTransform.position.y), false).magnitude;
+                    float tailDist = GetDirectionToMouse(new Vector2(tailTransform.position.x, tailTransform.position.y), false).magnitude;
+
+                    if (tailDist - headDist < minHeadTailSeparation)
+                    {
+                        // choose head
+                        selectedTransform = headTransform;
+                        selectedRB = headRB;
+                    }
+                    else
+                    {
+                        // choose tail
+                        selectedTransform = tailTransform;
+                        selectedRB = tailRB;
+                    }
+
+                    offsetAngle = UnityEngine.Random.Range(-MOV_ANGLE_OFFSET, MOV_ANGLE_OFFSET);
+
                 }
-                else
+
+
+                // push chosen segment
+                if (selectedTransform != null)
                 {
-                    // choose tail
-                    selectedTransform = tailTransform;
-                    selectedRB = tailRB;
+                    Vector2 dir = GetDirectionToMouse(new Vector2(selectedTransform.position.x, selectedTransform.position.y));
+                    dir = Vector2Extension.Rotate(dir, offsetAngle);
+                    selectedRB.AddForce((PUSH_FORCE * 0.5f) * dir);
                 }
-
-                offsetAngle = UnityEngine.Random.Range(-MOV_ANGLE_OFFSET, MOV_ANGLE_OFFSET);
-
             }
-
-
-            // push chosen segment
-            Vector2 dir = GetDirectionToMouse(new Vector2(selectedTransform.position.x, selectedTransform.position.y));
-            dir = Vector2Extension.Rotate(dir, offsetAngle);
-            selectedRB.AddForce((PUSH_FORCE * 0.5f) * dir);
         }
+
 
 
 

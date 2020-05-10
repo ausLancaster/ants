@@ -6,11 +6,17 @@ public class Carriable : MonoBehaviour
 {
     public bool isCarried { get; set; }
     public List<AntBehaviour> carriers { get; set; }
-    public bool delivered {get; private set; }
+    public bool delivered { get; private set; }
+    public Vector3 originalPosition { get; private set; }
 
     private void Awake()
     {
         carriers = new List<AntBehaviour>();
+    }
+
+    private void Start()
+    {
+        originalPosition = transform.position;
     }
 
     public void AddCarrier(AntBehaviour carrier)

@@ -7,7 +7,7 @@ public enum AntState { ReturnToNest, DragToNest, FollowTrail, SearchForFood }
 
 public class AntBehaviour : MonoBehaviour
 {
-    private readonly bool CAN_STEAL = false;
+    private readonly bool CAN_STEAL = true;
     private const float MAX_WIGGLE = 30f;
     private const float SEARCH_SPEED = 0.02f;
     private const float RETURN_SPEED = 0.015f;
@@ -50,12 +50,6 @@ public class AntBehaviour : MonoBehaviour
         steps = 0;
         spriteRenderer = GetComponent<SpriteRenderer>();
         searchingColor = spriteRenderer.color;
-        returningColor = searchingColor;
-        /*returningColor = new Color(
-            spriteRenderer.color.r + 0.2f,
-            spriteRenderer.color.g + 0.2f,
-            spriteRenderer.color.b + 0.2f
-            );*/
         checkedPositions = new List<Vector3>();
         hinge = GetComponent<HingeJoint2D>();
         rb = GetComponent<Rigidbody2D>();
@@ -271,8 +265,7 @@ public class AntBehaviour : MonoBehaviour
                     carriedObject.AddCarrier(this);
                     carriedObject.isCarried = true;
                     state = AntState.ReturnToNest;
-                    spriteRenderer.color = returningColor;
-                    targetFoodPos = carriedObject.transform.position;
+                    targetFoodPos = carriedObject.originalPosition;
                 }
             }
         }
@@ -297,8 +290,7 @@ public class AntBehaviour : MonoBehaviour
                 carriedObject.AddCarrier(this);
                 carriedObject.isCarried = true;
                 state = AntState.DragToNest;
-                spriteRenderer.color = returningColor;
-                targetFoodPos = carriedObject.transform.position;
+                targetFoodPos = carriedObject.originalPosition;
             }
             else
             {

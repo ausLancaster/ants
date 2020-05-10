@@ -27,7 +27,10 @@ public class Level : MonoBehaviour
     {
         for (int i = 0; i < ANTS_NUM; i++)
         {
-            antFactory.CreateAnt(new Vector3(UnityEngine.Random.Range(MIN_X, MAX_X), UnityEngine.Random.Range(MIN_Y, MAX_Y), 0));
+            antFactory.CreateAnt(
+                new Vector3(UnityEngine.Random.Range(MIN_X, MAX_X), UnityEngine.Random.Range(MIN_Y, MAX_Y), 0),
+                Team.Blue
+                );
         }
     }
 

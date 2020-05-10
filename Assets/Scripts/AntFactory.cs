@@ -15,10 +15,22 @@ public class AntFactory : MonoBehaviour
     private Level level;
     [SerializeField]
     private ScentMap scentMap;
+    [SerializeField]
+    private Color blueColor;
+    [SerializeField]
+    private Color redColor;
 
-    public AntBehaviour CreateAnt(Vector3 location)
+    public AntBehaviour CreateAnt(Vector3 location, Team team)
     {
         AntBehaviour ant = Instantiate(antPrefab);
+        ant.team = team;
+        if (team == Team.Blue)
+        {
+            ant.GetComponent<SpriteRenderer>().color = blueColor;
+        } else if (team == Team.Red)
+        {
+            ant.GetComponent<SpriteRenderer>().color = redColor;
+        }
         ant.Initialize(level, scentMap);
         ant.transform.localRotation = Quaternion.Euler(0, 0, Random.Range(0, 360f));
         ant.transform.localPosition = location;

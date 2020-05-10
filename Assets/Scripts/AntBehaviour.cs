@@ -21,6 +21,10 @@ public class AntBehaviour : MonoBehaviour
     private const float COLLISION_SPEED_MODIFIER = 0.1f;
     private const float PULL_WIGGLE = 0.25f;
 
+    [SerializeField]
+    public static Color blueColor;
+    [SerializeField]
+    private static Color redColor;
     private Level level;
     private ScentMap scentMap;
     private float speed;
@@ -42,6 +46,7 @@ public class AntBehaviour : MonoBehaviour
     [SerializeField]
     private GameObject collidingWith;
     private bool isSlowedByCollision = false;
+    public Team team;
 
     public void Initialize(Level level, ScentMap scentMap)
     {
@@ -307,4 +312,10 @@ public class AntBehaviour : MonoBehaviour
             isSlowedByCollision = true;
         }
     }
+}
+
+public enum Team
+{
+    Blue,
+    Red
 }

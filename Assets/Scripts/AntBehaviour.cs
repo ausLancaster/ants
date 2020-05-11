@@ -21,10 +21,6 @@ public class AntBehaviour : MonoBehaviour
     private const float COLLISION_SPEED_MODIFIER = 0.1f;
     private const float PULL_WIGGLE = 0.25f;
 
-    [SerializeField]
-    public static Color blueColor;
-    [SerializeField]
-    private static Color redColor;
     private Level level;
     private ScentMap scentMap;
     private float speed;
@@ -183,6 +179,9 @@ public class AntBehaviour : MonoBehaviour
     {
         // check if ant has reached end of food trail
         if ((state == AntState.FollowTrail) && ((transform.position - targetFoodPos).sqrMagnitude < (speed*2)*(speed*2))) {
+            if (team == Team.Red) {
+                print("end of trail");
+            }
             transform.position = targetFoodPos;
             state = AntState.SearchForFood;
         }

@@ -268,6 +268,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 756419435}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!50 &146149269 stripped
@@ -455,7 +466,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &187961989
@@ -673,6 +684,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 1893738202}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!50 &323167472 stripped
@@ -838,6 +860,17 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: -2.3649604
       objectReference: {fileID: 0}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
@@ -923,6 +956,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 1364586967}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!50 &424696528 stripped
@@ -1019,6 +1063,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 323167472}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!50 &444693653 stripped
@@ -1332,6 +1387,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 146149269}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!50 &709206989 stripped
@@ -1358,6 +1424,7 @@ GameObject:
   - component: {fileID: 722730873}
   - component: {fileID: 722730876}
   - component: {fileID: 722730875}
+  - component: {fileID: 722730877}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -1383,6 +1450,8 @@ MonoBehaviour:
     type: 3}
   level: {fileID: 722730876}
   scentMap: {fileID: 722730875}
+  blueColor: {r: 0.09211465, g: 0.092583776, b: 0.4339623, a: 1}
+  redColor: {r: 0.6792453, g: 0.13136347, b: 0.13136347, a: 1}
 --- !u!4 &722730874
 Transform:
   m_ObjectHideFlags: 0
@@ -1422,6 +1491,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   antFactory: {fileID: 722730873}
+--- !u!114 &722730877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 722730872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3987c479c7cd64ca89fb9baa78f47f69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  antFactory: {fileID: 722730873}
+  camera: {fileID: 519420031}
 --- !u!50 &725296459 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 4083081972066818637, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
@@ -1516,6 +1599,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 1228978440}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!50 &756419435 stripped
@@ -1612,6 +1706,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 113122949}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!1001 &912092366
@@ -1696,6 +1801,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 681284496}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!1001 &920140308
@@ -1780,6 +1896,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 725296459}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!1001 &970469387
@@ -1864,6 +1991,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 684483103}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!1 &1057560992
@@ -1942,7 +2080,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1001 &1185232094
@@ -2027,6 +2165,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 709206989}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!50 &1185232095 stripped
@@ -2172,6 +2321,17 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: -2.3649604
       objectReference: {fileID: 0}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
@@ -2269,6 +2429,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 1867512496}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!1001 &1364586966
@@ -2353,6 +2524,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 444693653}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!50 &1364586967 stripped
@@ -2443,7 +2625,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1448723034
@@ -2582,6 +2764,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 1185232095}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!4 &1542355272 stripped
@@ -2678,6 +2871,17 @@ PrefabInstance:
       propertyPath: m_ConnectedRigidBody
       value: 
       objectReference: {fileID: 424696528}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}
 --- !u!4 &1658530238 stripped
@@ -2780,6 +2984,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ConnectedAnchor.y
       value: -2.3649604
+      objectReference: {fileID: 0}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2b8f9c2bf927747e3a6d74d2a69d3092,
+        type: 3}
+    - target: {fileID: 1976690369673418692, guid: 49fc79398fd0548e2ac4e7faed5a3b1a,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4720575184019288132, guid: 49fc79398fd0548e2ac4e7faed5a3b1a, type: 3}

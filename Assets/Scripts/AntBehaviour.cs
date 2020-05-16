@@ -43,6 +43,7 @@ public class AntBehaviour : MonoBehaviour
     private GameObject collidingWith;
     private bool isSlowedByCollision = false;
     public Team team;
+    private Animator animator;
 
     public void Initialize(Level level, ScentMap scentMap)
     {
@@ -54,6 +55,7 @@ public class AntBehaviour : MonoBehaviour
         checkedPositions = new List<Vector3>();
         hinge = GetComponent<HingeJoint2D>();
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -88,6 +90,12 @@ public class AntBehaviour : MonoBehaviour
 
 
         steps++;
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            animator.ResetTrigger("AttackTrigger");
+            animator.SetTrigger("AttackTrigger");
+        }
     }
 
     void SearchForFood()
@@ -177,6 +185,10 @@ public class AntBehaviour : MonoBehaviour
     // randomly change direction to give "wiggle" effect, move forward
     void Wiggle()
     {
+        if (team == Team.Red)
+        {
+            print("wiggle");
+        }
         // check if ant has reached end of food trail
         if ((state == AntState.FollowTrail) && ((transform.position - targetFoodPos).sqrMagnitude < (speed*2)*(speed*2))) {
             if (team == Team.Red) {

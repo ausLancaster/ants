@@ -44,6 +44,9 @@ public class AntBehaviour : MonoBehaviour
     private bool isSlowedByCollision = false;
     public Team team;
     private Animator animator;
+    private GameObject jawsAndBody;
+    private GameObject hingedTo;
+    private Vector3 hingedToOffset;
 
     public void Initialize(Level level, ScentMap scentMap)
     {
@@ -53,13 +56,22 @@ public class AntBehaviour : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         searchingColor = spriteRenderer.color;
         checkedPositions = new List<Vector3>();
-        hinge = GetComponent<HingeJoint2D>();
-        rb = GetComponent<Rigidbody2D>();
+        hinge = GetComponentInChildren<HingeJoint2D>();
+        rb = GetComponentInChildren<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        jawsAndBody = GetComponentInChildren<JawsAndBody>().gameObject;
     }
 
     void Update()
     {
+        Vector3 changePos = jawsAndBody.transform.position - transform.position;
+        Quaternion changeRot = jawsAndBody.transform.rotation * Quaternion.Inverse(transform.rotation);
+
+        transform.position = jawsAndBody.transform.position;
+        transform.rotation = jawsAndBody.transform.rotation;
+        jawsAndBody.transform.position -= changePos;
+        jawsAndBody.transform.rotation *= Quaternion.Inverse(changeRot);
+
         switch (state)
         {
             case AntState.FollowTrail:
@@ -96,6 +108,14 @@ public class AntBehaviour : MonoBehaviour
             animator.ResetTrigger("AttackTrigger");
             animator.SetTrigger("AttackTrigger");
         }
+    }
+
+    private void FixedUpdate()
+    {
+        if (hinge.isActiveAndEnabled && hingedTo != null)
+        {
+            hinge.connectedAnchor = hingedTo.transform.rotation * hingedToOffset;
+       }
     }
 
     void SearchForFood()
@@ -145,6 +165,7 @@ public class AntBehaviour : MonoBehaviour
 
     private void DeliverFood()
     {
+        hinge.enabled = false;
         if (carriedObject)
         {
             GameObject toDestroy = carriedObject.gameObject;
@@ -160,6 +181,7 @@ public class AntBehaviour : MonoBehaviour
 
     public void LoseFood()
     {
+        hinge.enabled = false;
         carriedObject = null;
         state = AntState.SearchForFood;
         spriteRenderer.color = searchingColor;
@@ -246,7 +268,7 @@ public class AntBehaviour : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void Trigger(Collider2D other)
     {
         if (state == AntState.ReturnToNest || state == AntState.DragToNest)
         {
@@ -288,7 +310,7 @@ public class AntBehaviour : MonoBehaviour
 
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void Collision(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Food")
             && !(state == AntState.ReturnToNest || state == AntState.DragToNest))
@@ -302,7 +324,11 @@ public class AntBehaviour : MonoBehaviour
                 transform.position = hingePoint - transform.rotation * jawsOffset;
                 Rigidbody2D otherRb = collision.gameObject.GetComponent<Rigidbody2D>();
                 if (!otherRb) throw new System.Exception("Tried to pick up food that has no Rigidbody");
+                hinge.enabled = true;
                 hinge.connectedBody = otherRb;
+                hingedTo = collision.gameObject;
+                hingedToOffset = Quaternion.Inverse(collision.gameObject.transform.rotation) * (collision.gameObject.transform.position - hingePoint);
+                hinge.connectedAnchor = hingePoint - collision.gameObject.transform.position;
                 carriedObject.AddCarrier(this);
                 carriedObject.isCarried = true;
                 state = AntState.DragToNest;
@@ -315,9 +341,12 @@ public class AntBehaviour : MonoBehaviour
         }
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    public void CollisionStay(Collision2D collision)
     {
-        if (!collision.gameObject.CompareTag("Ant") && !collision.gameObject.CompareTag("Nest"))
+        GameObject collisionParent = collision.gameObject.transform.parent.gameObject;
+        if (collisionParent != null
+         && !collisionParent.CompareTag("Ant")
+         && !collision.gameObject.CompareTag("Nest"))
         {
             collidingWith = collision.gameObject;
             isSlowedByCollision = true;

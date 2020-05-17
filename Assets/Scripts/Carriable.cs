@@ -7,7 +7,8 @@ public class Carriable : MonoBehaviour
     public bool isCarried { get; set; }
     public List<AntBehaviour> carriers { get; set; }
     public bool delivered { get; private set; }
-    public Vector3 originalPosition { get; private set; }
+    public Vector3 originalPosition { get; set; }
+    public bool droppable;
 
     private void Awake()
     {

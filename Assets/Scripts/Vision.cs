@@ -4,13 +4,19 @@ using UnityEngine;
 
 public class Vision : MonoBehaviour
 {
-    [SerializeField]
-    AntBehaviour ant;
+    private AntBehaviour ant;
+
+    private void Start()
+    {
+        ant = GetComponentInParent<AntBehaviour>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Ant")) {
-            print("seen");
+        print("seen");
+        if (other.gameObject.transform.parent.CompareTag("Ant")) {
+            AntBehaviour otherAnt = other.gameObject.transform.parent.GetComponent<AntBehaviour>();
+            ant.SpotAnt(otherAnt);
         }
     }
 }

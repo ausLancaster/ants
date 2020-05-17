@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AntState { ReturnToNest, DragToNest, FollowTrail, SearchForFood }
-
+public enum AntState { ReturnToNest, DragToNest, FollowTrail, SearchForFood, Attack }
+public enum Team { Blue, Red }
+public enum AttackState { SwipeIn, SwipeOut, CloseIn, Backpedal, Wait }
 
 public class AntBehaviour : MonoBehaviour
 {
@@ -20,8 +21,16 @@ public class AntBehaviour : MonoBehaviour
     private const float PULL_FORCE = 1.25f;
     private const float COLLISION_SPEED_MODIFIER = 0.1f;
     private const float PULL_WIGGLE = 0.25f;
+    private float ATTACK_POS_NEAR = 0.1f;
+    private float ATTACK_POS_MEDIUM = 0.2f;
+    private float ATTACK_POS_FAR = 0.4f;
+    private float SWIPE_IN_SPEED = 0.06f;
+    private float SWIPE_OUT_SPEED = 0.03f;
+    private float CLOSE_IN_SPEED = 0.04f;
+    private float SWIPE_CHANCE = 0.005f;
+    private float SWIPE_DURATION = 0.5f;
 
-    private Level level;
+        private Level level;
     private ScentMap scentMap;
     private float speed;
     private int steps;
@@ -47,6 +56,11 @@ public class AntBehaviour : MonoBehaviour
     private GameObject jawsAndBody;
     private GameObject hingedTo;
     private Vector3 hingedToOffset;
+    private AntBehaviour attackTarget;
+    private AttackState attackState;
+    private float swipeTimer;
+    private Vector3 v_n;
+    private float m;
 
     public void Initialize(Level level, ScentMap scentMap)
     {
@@ -88,6 +102,9 @@ public class AntBehaviour : MonoBehaviour
                 break;
             case AntState.DragToNest:
                 DragFoodHome();
+                break;
+            case AntState.Attack:
+                Attack();
                 break;
         }
         if (isSlowedByCollision)
@@ -179,6 +196,17 @@ public class AntBehaviour : MonoBehaviour
         carriedObject.RemoveFoodFromCarriers(this);
     }
 
+    private void DropFood()
+    {
+        if (carriedObject.droppable)
+        {
+            carriedObject.transform.parent = null;
+            carriedObject.isCarried = false;
+            carriedObject.originalPosition = transform.position + transform.rotation * jawsOffset;
+        }
+        LoseFood();
+    }
+
     public void LoseFood()
     {
         hinge.enabled = false;
@@ -207,15 +235,8 @@ public class AntBehaviour : MonoBehaviour
     // randomly change direction to give "wiggle" effect, move forward
     void Wiggle()
     {
-        if (team == Team.Red)
-        {
-            print("wiggle");
-        }
         // check if ant has reached end of food trail
         if ((state == AntState.FollowTrail) && ((transform.position - targetFoodPos).sqrMagnitude < (speed*2)*(speed*2))) {
-            if (team == Team.Red) {
-                print("end of trail");
-            }
             transform.position = targetFoodPos;
             state = AntState.SearchForFood;
         }
@@ -270,6 +291,12 @@ public class AntBehaviour : MonoBehaviour
 
     public void Trigger(Collider2D other)
     {
+        if (other.gameObject.CompareTag("Vision"))
+        {
+            AntBehaviour otherAnt = other.gameObject.transform.parent.GetComponent<AntBehaviour>();
+            otherAnt.SpotAnt(this);
+        }
+
         if (state == AntState.ReturnToNest || state == AntState.DragToNest)
         {
             if (other.gameObject.CompareTag("Nest"))
@@ -281,7 +308,7 @@ public class AntBehaviour : MonoBehaviour
                     throw new System.Exception("Delivered food but still carrying something");
                 }
             }
-        } else
+        } else if (state == AntState.FollowTrail || state == AntState.SearchForFood)
         {
             if (other.gameObject.CompareTag("Food"))
             {
@@ -352,10 +379,106 @@ public class AntBehaviour : MonoBehaviour
             isSlowedByCollision = true;
         }
     }
-}
 
-public enum Team
-{
-    Blue,
-    Red
+    public void SpotAnt(AntBehaviour other)
+    {
+
+        if (team == Team.Red || true) {
+            if (state != AntState.Attack && other.team != team)
+            {
+                if (carriedObject)
+                {
+                    DropFood();
+                }
+                state = AntState.Attack;
+                attackTarget = other;
+            }
+        }
+
+
+    }
+
+    private void Attack() {
+        if (steps % 10 == 0) {
+            Vector3 v = attackTarget.transform.position - transform.position;
+            m = v.sqrMagnitude;
+            //print(m);
+            //print(advancing);
+            print(v);
+            v_n = v.normalized;
+            transform.rotation = Quaternion.LookRotation(Vector3.forward, v_n);
+
+        }
+
+
+
+        Vector3 nextPos = Vector3.negativeInfinity;
+
+        if (m < ATTACK_POS_NEAR)
+        {
+            attackState = AttackState.SwipeOut;
+        } else if (m > ATTACK_POS_FAR)
+        {
+            attackState = AttackState.CloseIn;
+        }
+
+        if (attackState == AttackState.SwipeOut)
+        {
+            nextPos = transform.position - v_n * SWIPE_OUT_SPEED;
+            if (m > ATTACK_POS_MEDIUM)
+            {
+                attackState = AttackState.Wait;
+            }
+        }
+        else if (attackState == AttackState.SwipeIn)
+        {
+            nextPos = transform.position + v_n * SWIPE_IN_SPEED;
+            swipeTimer -= Time.deltaTime;
+            if (swipeTimer <= 0)
+            {
+                attackState = AttackState.SwipeOut;
+            }
+        }
+        else if (attackState == AttackState.Wait)
+        {
+            if (Random.value < SWIPE_CHANCE)
+            {
+                attackState = AttackState.SwipeIn;
+                swipeTimer = SWIPE_DURATION;
+            }
+        } else if (attackState == AttackState.CloseIn)
+        {
+            nextPos = transform.position + v_n * CLOSE_IN_SPEED;
+        }
+
+        /*if (m > ATTACK_DISTANCE_MAX && !advancing)
+        {
+            nextPos = transform.position + v_n * ATTACK_MOVEMENT_SPEED;
+            // too far away from target
+            advancing = true;
+        }
+        else if (m < ATTACK_DISTANCE_MIN && advancing)
+        {
+            // to close to target
+            nextPos = transform.position - v_n * ATTACK_MOVEMENT_SPEED;
+            advancing = false;
+        }*/
+
+        /*if (advancing)
+        {
+            // advance towards target
+            nextPos = transform.position + v_n * ATTACK_MOVEMENT_SPEED;
+        }
+        else
+        {
+            // retreat from target
+            nextPos = transform.position - v_n * ATTACK_MOVEMENT_SPEED;
+        }*/
+
+        if (level.ContainsWithinBounds(nextPos) && !nextPos.Equals(Vector3.negativeInfinity))
+        {
+            transform.position = nextPos;
+        }
+    }
+
 }

@@ -10,13 +10,14 @@ GameObject:
   m_Component:
   - component: {fileID: 239112967}
   - component: {fileID: 239112968}
+  - component: {fileID: 3206190722380151816}
   m_Layer: 9
   m_Name: Vision
-  m_TagString: Untagged
+  m_TagString: Vision
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &239112967
 Transform:
   m_ObjectHideFlags: 0
@@ -47,6 +48,18 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0.48}
   serializedVersion: 2
   m_Radius: 0.65
+--- !u!114 &3206190722380151816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239112966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a848fae6a0464d7aa8c2a0767b2bff9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6287740729863853776
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,6 +107,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac6145fd0ffe5d148ad14ad9835f302a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ATTACK_DISTANCE_MIN: 0.5
+  ATTACK_DISTANCE_MAX: 1
+  ATTACK_MOVEMENT_SPEED: 0.03
   state: 3
   speedModifier: 1
   collidingWith: {fileID: 0}
